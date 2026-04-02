@@ -295,7 +295,7 @@ export async function executeNonStreamingChat({
       // 解析工具参数
       const args = JSON.parse(toolCall.function.arguments);
 
-      console.log(`调用工具: ${toolCall.function.name}`, args);
+      // console.log(`调用工具: ${toolCall.function.name}`, args);
 
       // 执行工具
       const result = await executeTool(toolCall.function.name, args, {
