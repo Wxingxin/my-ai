@@ -10,27 +10,6 @@ import { Message } from "@/lib/models/types/ai"; // AI 对话消息的 TS 类型
 import { validateSession } from "@/lib/vaildateSession"; // 校验当前用户是否已登录，并返回用户身份信息
 import { executeNonStreamingChat, executeStreamingChat } from "./chat-service"; // 分别处理“非流式聊天”和“流式聊天”的核心逻辑
 
-// 用户发消息
-//    ↓
-// 构建 fullMessages
-//    ↓
-// callModel（AI）
-//    ↓
-// AI决定：
-//    ├── 直接回答（结束）
-//    └── 调用工具（进入循环）
-//             ↓
-//         executeTool
-//             ↓
-//         把结果再喂给 AI
-//             ↓
-//         再次 callModel
-//             ↓
-//         直到 AI 不再调用工具
-//    ↓
-// 返回最终结果（流式 or 非流式）
-//    ↓
-// 写入数据库
 
 export async function POST(req: Request) {
   // 定义 POST 接口：当前这个 /api/chat 路由只处理 POST 请求
@@ -240,3 +219,25 @@ export async function POST(req: Request) {
     // 注意：这里不要把真正的 error 直接暴露给前端，避免泄漏服务端内部信息
   }
 }
+
+// 用户发消息
+//    ↓
+// 构建 fullMessages
+//    ↓
+// callModel（AI）
+//    ↓
+// AI决定：
+//    ├── 直接回答（结束）
+//    └── 调用工具（进入循环）
+//             ↓
+//         executeTool
+//             ↓
+//         把结果再喂给 AI
+//             ↓
+//         再次 callModel
+//             ↓
+//         直到 AI 不再调用工具
+//    ↓
+// 返回最终结果（流式 or 非流式）
+//    ↓
+// 写入数据库

@@ -99,13 +99,13 @@ async function persistAssistantReply({
  * 3. 最终把完整回复写入数据库
  */
 export async function executeStreamingChat({
-  collection,
-  conversation,
-  fullMessages,
-  resolvedProvider,
-  trimmedContent,
-  userMessage,
-  userId,
+  collection, // 聊天会话集合，后面可能要更新数据库
+  conversation, // 当前会话文档，里面有历史消息等信息
+  fullMessages, // 完整消息上下文，发给模型
+  resolvedProvider, // 最终确定的 provider，例如 openai
+  trimmedContent, // 当前用户输入的纯净文本
+  userMessage, // 已经封装好的用户消息对象
+  userId // 当前用户 id，后续保存数据库可能要用
 }: ExecuteChatParams) {
   const encoder = new TextEncoder();
   // TextEncoder 用来把字符串编码成 Uint8Array
@@ -117,7 +117,7 @@ export async function executeStreamingChat({
         // 复制一份消息上下文，避免直接污染传进来的 fullMessages
         const toolMessages = [...fullMessages];
 
-        console.log("allTools:", JSON.stringify(allTools, null, 2));
+        // console.log("allTools:", JSON.stringify(allTools, null, 2));
 
         // 最多允许模型进行 MAX_TOOL_ROUNDS 轮工具调用
         for (let round = 0; round < MAX_TOOL_ROUNDS; round += 1) {
@@ -215,7 +215,7 @@ export async function executeStreamingChat({
         );
       } catch (error) {
         // 整个流式执行过程出错
-        console.error("Streaming chat error:", error);
+        // console.error("Streaming chat error:", error);
 
         controller.enqueue(
           encoder.encode(
@@ -251,13 +251,13 @@ export async function executeStreamingChat({
  * 3. 会等模型全部处理完成后一次性返回 JSON
  */
 export async function executeNonStreamingChat({
-  collection,
-  conversation,
-  fullMessages,
-  resolvedProvider,
-  trimmedContent,
-  userMessage,
-  userId,
+  collection, // 聊天会话集合，后面可能要更新数据库
+  conversation, // 当前会话文档，里面有历史消息等信息
+  fullMessages, // 完整消息上下文，发给模型
+  resolvedProvider, // 最终确定的 provider，例如 openai
+  trimmedContent, // 当前用户输入的纯净文本
+  userMessage, // 已经封装好的用户消息对象
+  userId, // 当前用户 id，后续保存数据库可能要用
 }: ExecuteChatParams) {
   // 最多循环 MAX_TOOL_ROUNDS 轮，防止工具调用死循环
   for (let round = 0; round < MAX_TOOL_ROUNDS; round += 1) {
